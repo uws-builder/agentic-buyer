@@ -1,0 +1,26 @@
+{
+  "schema": "plan_handoff.v0",
+  "draft": true,
+  "plan_id": "plan_summit_ridge_2027_ss",
+  "advertiser_id": "adv_summit_ridge",
+  "advertiser": "Summit Ridge Outdoors",
+  "flight": {"start": "2027-03-01", "end": "2027-08-31"},
+  "total_budget_usd": 800000,
+  "lines": [
+    {"line_id": "L1", "publisher": "Northlight Streaming", "kind": "Premium SVOD", "budget_usd": 220000, "target_cpm": 30.0},
+    {"line_id": "L2", "publisher": "Summit Network Apps", "kind": "Network / vMVPD", "budget_usd": 150000, "target_cpm": 26.0},
+    {"line_id": "L3", "publisher": "TrailCast FAST", "kind": "FAST", "budget_usd": 130000, "target_cpm": 18.0},
+    {"line_id": "L4", "publisher": "Arena Live", "kind": "Live sports", "budget_usd": 160000, "target_cpm": 34.0},
+    {"line_id": "L5", "publisher": "Shoppable CTV Exchange", "kind": "Performance CTV", "budget_usd": 140000, "target_cpm": 24.0}
+  ],
+  "constraints": {
+    "excluded_publishers": ["Vortex Stream", "Hollow Peak Media", "Dispatch Now News Network"],
+    "avoid_publishers": ["Open Road Channels"],
+    "audience_providers": ["Meridian Audience Data"],
+    "cpm_tolerance_pct": 10
+  },
+  "commitments": [
+    {"id": "cm_001", "publisher": "Northlight Streaming", "deal_type": "PG", "min_spend_usd": 150000, "start": "2027-03-01", "end": "2027-06-30"},
+    {"id": "cm_002", "publisher": "TrailCast FAST", "deal_type": "DIO", "min_spend_usd": 80000, "start": "2027-05-10", "end": "2027-08-22"}
+  ]
+}

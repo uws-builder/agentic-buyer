@@ -1,0 +1,22 @@
+{
+  "draft": true,
+  "note": "Made-up sell-side offers. Each trap is deliberate: a cheap offer with a disallowed audience provider, a PG over the CPM ceiling, and a PMP with too few avails to fill its line.",
+  "offers": [
+    {"offer_id": "NL-PG-01", "publisher": "Northlight Streaming", "deal_type": "PG", "cpm": 29.5, "avails": 6000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-06-30"},
+    {"offer_id": "NL-PMP-02", "publisher": "Northlight Streaming", "deal_type": "PMP", "cpm": 31.0, "avails": 5000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+    {"offer_id": "NL-OPEN-03", "publisher": "Northlight Streaming", "deal_type": "OPEN", "cpm": 22.0, "avails": 20000000, "audience_provider": "Beacon Signals", "start": "2027-03-01", "end": "2027-08-31"},
+
+    {"offer_id": "SNA-PMP-01", "publisher": "Summit Network Apps", "deal_type": "PMP", "cpm": 27.5, "avails": 4000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+    {"offer_id": "SNA-PG-02", "publisher": "Summit Network Apps", "deal_type": "PG", "cpm": 31.0, "avails": 8000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+
+    {"offer_id": "TC-DIO-01", "publisher": "TrailCast FAST", "deal_type": "DIO", "cpm": 17.0, "avails": 9000000, "audience_provider": "Meridian Audience Data", "start": "2027-05-10", "end": "2027-08-22"},
+    {"offer_id": "TC-PMP-02", "publisher": "TrailCast FAST", "deal_type": "PMP", "cpm": 18.5, "avails": 3000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+
+    {"offer_id": "AL-PG-01", "publisher": "Arena Live", "deal_type": "PG", "cpm": 35.0, "avails": 5000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+
+    {"offer_id": "SCX-OPEN-01", "publisher": "Shoppable CTV Exchange", "deal_type": "OPEN", "cpm": 23.0, "avails": 8000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+    {"offer_id": "SCX-PMP-02", "publisher": "Shoppable CTV Exchange", "deal_type": "PMP", "cpm": 25.5, "avails": 2000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"},
+
+    {"offer_id": "VX-PMP-01", "publisher": "Vortex Stream", "deal_type": "PMP", "cpm": 19.0, "avails": 10000000, "audience_provider": "Meridian Audience Data", "start": "2027-03-01", "end": "2027-08-31"}
+  ]
+}

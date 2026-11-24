@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-buyer"
+version = "0.1.0"
+description = "Agentic media buyer: books a confirmed media plan with sellers, under harness-enforced guardrails."
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=2.10",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+buyer = "buyer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
