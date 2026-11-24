@@ -78,3 +78,21 @@ def test_model_failure_is_recorded(handoff, sellers):
 
     result = BuyingAgent(handoff, sellers, Broken()).run()
     assert result.error.startswith("model declined")
+
+
+def test_books_a_plan_exported_by_the_planner(sellers):
+    """The planner's flight ends 08-22, before most offers do; orders run on the shared days."""
+    from conftest import ROOT
+    from buyer.handoff import PlanHandoff
+
+    h = PlanHandoff.load(ROOT / "fixtures" / "plans" / "from_planner_summit_ridge.json")
+    picks = {"Northlight Streaming": "NL-PG-01", "Summit Network Apps": "SNA-PMP-01",
+             "TrailCast FAST": "TC-DIO-01", "Arena Live": "AL-PG-01",
+             "Shoppable CTV Exchange": "SCX-OPEN-01"}
+    drafts = [("draft_order", {"line_id": ln.line_id, "offer_id": picks[ln.publisher],
+                               "spend_usd": min(ln.budget_usd, 100_000), "rationale": "test"})
+              for ln in h.lines]
+    result = BuyingAgent(h, sellers, ScriptedClient([drafts, [("review_book", {})], "done"])).run()
+    failed = [(e.input["offer_id"], e.result) for e in result.events if not e.ok]
+    assert failed == []
+    assert all(o.flight.end <= h.flight.end for o in result.book.active())

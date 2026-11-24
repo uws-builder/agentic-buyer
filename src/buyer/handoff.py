@@ -46,6 +46,10 @@ class Flight:
             raise HandoffError(f"{field}: ends before it starts")
         return f
 
+    @property
+    def days(self) -> int:
+        return (self.end - self.start).days + 1  # inclusive
+
     def overlap(self, other: Flight) -> Flight | None:
         start, end = max(self.start, other.start), min(self.end, other.end)
         return Flight(start, end) if start <= end else None
@@ -101,6 +105,7 @@ class PlanHandoff:
     lines: tuple[PlanLine, ...]
     constraints: Constraints
     commitments: tuple[Commitment, ...]
+    planner_notes: tuple[str, ...] = ()  # informational, shown to the approver
 
     def line(self, line_id: str) -> PlanLine | None:
         return next((ln for ln in self.lines if ln.line_id == line_id), None)
@@ -158,6 +163,7 @@ class PlanHandoff:
                 lines=lines,
                 constraints=constraints,
                 commitments=commitments,
+                planner_notes=tuple(str(n) for n in d.get("planner_notes") or ()),
             )
         except (KeyError, TypeError, ValueError) as err:
             if isinstance(err, HandoffError):

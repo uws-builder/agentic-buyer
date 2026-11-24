@@ -64,11 +64,27 @@ def test_zero_or_negative_spend_is_rejected(handoff, sellers):
     assert "at least one impression" in violations(OrderBook(handoff), sellers, "L1", "NL-PG-01", -5)
 
 
-def test_offer_outside_plan_flight_is_rejected(plan_dict, sellers):
+def test_offer_longer_than_the_plan_books_only_the_shared_days(plan_dict, sellers):
     from buyer.handoff import PlanHandoff
-    plan_dict["flight"]["end"] = "2027-07-31"
+    plan_dict["flight"]["end"] = "2027-08-22"  # AL-PG-01 runs to 08-31
+    book = OrderBook(PlanHandoff.from_dict(plan_dict))
+    offer = sellers.get_offer("AL-PG-01")
+    in_window = 5_000_000 * 175 // 184  # 175 of the offer's 184 days
+    assert book.avails_left(offer) == in_window
+    order, _ = draft(book, sellers, "L4", "AL-PG-01", 1_000)
+    assert str(order.flight.end) == "2027-08-22"
+    too_much = (in_window + 1000) * 35 / 1000
+    assert "remaining avails in the plan flight" in violations(book, sellers, "L4", "AL-PG-01", too_much)
+
+
+def test_offer_with_no_shared_days_is_rejected(plan_dict, sellers):
+    from buyer.handoff import PlanHandoff
+    plan_dict["flight"]["end"] = "2027-04-30"
+    for cm in plan_dict["commitments"]:
+        cm["end"] = "2027-04-30"
+        cm["start"] = "2027-03-01"
     h = PlanHandoff.from_dict(plan_dict)
-    assert "outside the plan flight" in violations(OrderBook(h), sellers, "L4", "AL-PG-01", 1_000)
+    assert "doesn't overlap the plan flight" in violations(OrderBook(h), sellers, "L3", "TC-DIO-01", 1_000)
 
 
 def test_avoid_list_is_a_warning_not_a_block(plan_dict, sellers):

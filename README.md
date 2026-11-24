@@ -1,6 +1,6 @@
 # Agentic Media Buyer (prototype)
 
-The buying half of [agentic-planner](../agentic-planner). The planner produces a confirmed
+The buying half of [agentic-planner](https://github.com/uws-builder/agentic-planner). The planner produces a confirmed
 streaming-TV media plan. This agent takes that plan and books it: it reads each seller's
 offers, splits each line's budget across deals, and drafts orders. A person then approves
 which drafts are sent.
@@ -86,7 +86,7 @@ src/buyer/
   demo.py       scripted turns for the Summit Ridge fixture
   cli.py        run, print the book, ask for approval, write out/buy_<plan_id>.json
 fixtures/
-  plans/        plan handoffs (Summit Ridge matches the planner's advertiser fixtures)
+  plans/        plan handoffs: a hand-written Summit Ridge plan, plus one exported by the planner
   sellers.json  offers, including deliberate traps
 tests/          handoff, guardrails, agent loop, model client, CLI
 githooks/       same commit safeguards as the planner
@@ -104,8 +104,9 @@ githooks/       same commit safeguards as the planner
 
 ## Not built yet
 
-- Making the planner emit `plan_handoff.v0` directly, and the buyer-to-planner replan
-  request for shortfalls.
+- The buyer-to-planner replan request for shortfalls. (The planner already exports
+  `plan_handoff.v0`; see [docs/handoff.md](docs/handoff.md).)
+- Demo mode for plans other than the Summit Ridge fixture: other plans need `--real`.
 - Real seller backends, deal negotiation, and changes to orders already sent.
 - Pacing and in-flight optimization after launch.
 - A Streamlit approval screen to match the planner's UI.

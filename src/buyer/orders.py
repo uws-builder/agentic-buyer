@@ -6,6 +6,9 @@ the plan handoff, using prices and avails read from the seller, never numbers
 the model supplies. Approval is a separate, human-only step; nothing the agent
 can call moves an order past `drafted`.
 
+An order runs only on the days its offer and the plan flight share, and the
+avails it can use shrink in proportion.
+
 Lifecycle:  drafted -> approved -> submitted | failed
             drafted -> cancelled
 """
@@ -78,6 +81,15 @@ class OrderBook:
     def impressions_on_offer(self, offer_id: str) -> int:
         return sum(o.impressions for o in self.active() if o.offer_id == offer_id)
 
+    def avails_left(self, offer: Offer) -> int:
+        """Impressions still bookable on `offer` inside the plan flight. Orders only run on
+        the days the offer and the plan share, and avails scale with those days."""
+        window = offer.flight.overlap(self.handoff.flight)
+        if window is None:
+            return 0
+        in_window = math.floor(offer.avails * window.days / offer.flight.days)
+        return max(0, in_window - self.impressions_on_offer(offer.offer_id))
+
     def get(self, order_id: str) -> Order | None:
         return next((o for o in self.orders if o.order_id == order_id), None)
 
@@ -105,9 +117,10 @@ class OrderBook:
         if offer.cpm > ceiling:
             v.append(f"CPM ${offer.cpm:.2f} is above line {line_id}'s ceiling ${ceiling:.2f} "
                      f"(target ${line.target_cpm:.2f} + {h.constraints.cpm_tolerance_pct:g}%)")
-        if offer.flight.start < h.flight.start or offer.flight.end > h.flight.end:
-            v.append(f"offer runs {offer.flight.start}..{offer.flight.end}, outside the plan flight "
-                     f"{h.flight.start}..{h.flight.end}")
+        window = offer.flight.overlap(h.flight)
+        if window is None:
+            v.append(f"offer runs {offer.flight.start}..{offer.flight.end}, which doesn't overlap "
+                     f"the plan flight {h.flight.start}..{h.flight.end}")
 
         impressions = math.floor(spend_usd * 1000 / offer.cpm) if spend_usd > 0 else 0
         cost = round(impressions * offer.cpm / 1000, 2)
@@ -119,10 +132,10 @@ class OrderBook:
         total_left = round(h.total_budget_usd - self.booked_total(), 2)
         if cost > total_left:
             v.append(f"${cost:,.2f} exceeds the plan's remaining budget ${total_left:,.2f}")
-        avails_left = offer.avails - self.impressions_on_offer(offer.offer_id)
+        avails_left = self.avails_left(offer)
         if impressions > avails_left:
             max_spend = round(avails_left * offer.cpm / 1000, 2)
-            v.append(f"{impressions:,} impressions exceeds {offer.offer_id}'s remaining avails "
+            v.append(f"{impressions:,} impressions exceeds {offer.offer_id}'s remaining avails in the plan flight "
                      f"{avails_left:,} (max spend ${max_spend:,.2f})")
         if v:
             raise OrderError(v)
@@ -140,7 +153,7 @@ class OrderBook:
             cpm=offer.cpm,
             impressions=impressions,
             spend_usd=cost,
-            flight=offer.flight,
+            flight=window,
             rationale=rationale.strip(),
         )
         self.orders.append(order)

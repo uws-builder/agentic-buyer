@@ -103,6 +103,11 @@ def main(argv: list[str] | None = None, ask: Callable[[str], str] = input,
         model = summit_ridge_client()
         out("Demo mode: scripted model turns, no API calls.")
 
+    if handoff.planner_notes:
+        out("Planner notes")
+        for note in handoff.planner_notes:
+            out(f"  - {note}")
+
     sellers = FakeSellers(down=set(args.seller_down))
     result = BuyingAgent(handoff, sellers, model).run()
 

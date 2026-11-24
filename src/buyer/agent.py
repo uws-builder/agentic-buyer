@@ -137,9 +137,11 @@ class BuyingAgent:
             for ln in lines:
                 if o.cpm > h.max_cpm(ln):
                     notes.append(f"CPM above {ln.line_id} ceiling ${h.max_cpm(ln):.2f}")
-            left = o.avails - self.book.impressions_on_offer(o.offer_id)
+            if o.flight.overlap(h.flight) is None:
+                notes.append("runs entirely outside the plan flight")
+            left = self.book.avails_left(o)
             offers.append({**o.to_dict(), "avails_left": left,
-                           "max_spend_usd": round(left * o.cpm / 1000, 2),
+                           "max_spend_usd": round(left * o.cpm / 1000, 2),  # within the plan flight
                            "rule_notes": notes or ["ok"]})
         return {"publisher": publisher, "plan_lines": [ln.line_id for ln in lines], "offers": offers}
 
